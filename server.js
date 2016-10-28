@@ -9,9 +9,13 @@ server.listen(3030, () => {
 })
 
 io.on('connection', (socket) => {
-    socket.emit('test', 'Client connected.')
+    socket.emit('test', 'client connected')
     //console.log('CONNECTED', socket)
 	socket.on('general', (msg) => {
 		io.emit('general', msg)	
+	})
+
+	socket.on('disconnect', () => {
+		io.emit('client disconnected')
 	})
 })
