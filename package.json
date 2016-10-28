@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/JackyChiu/Hacker-Chatroom#readme",
   "dependencies": {
+    "ecstatic": "^2.1.0",
     "socket.io-client": "^1.5.1",
     "socket.io-p2p": "^2.2.0",
     "socket.io-p2p-server": "^1.2.0"
