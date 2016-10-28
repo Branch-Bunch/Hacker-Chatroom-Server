@@ -11,8 +11,13 @@ server.listen(3030, () => {
 io.on('connection', (socket) => {
     socket.emit('test', 'client connected')
     //console.log('CONNECTED', socket)
+
 	socket.on('general', (msg) => {
 		io.emit('general', msg)
+	})
+
+	socket.on('private', (sender, msg) => {
+		// private message received
 	})
 
 	socket.on('disconnect', () => {
