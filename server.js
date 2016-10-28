@@ -24,8 +24,8 @@ io.on('connection', (socket) => {
 		io.emit('client disconnected')
 	})
 
-  	socket.on('create', function(room) {
-    	socket.join(room);
-  	});
+  	socket.on('create', (room) => {
+    	socket.join(room)
+  	})
 
 })
