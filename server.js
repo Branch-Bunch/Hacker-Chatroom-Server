@@ -1,9 +1,6 @@
 'use strict';
 
-const ecstatic = require('ecstatic');
-const server = require('http').createServer(
-  ecstatic({ root: __dirname, handleError: false })
-);
+const server = require('http').createServer();
 const p2pserver = require('socket.io-p2p-server').Server
 const io = require('socket.io')(server);
 
