@@ -29,6 +29,6 @@ io.on('connection', (socket) => {
 	})
 
   	socket.on('create', (room) => {
-    	socket.join(room)
+                socket.join(room)
   	})
 })
