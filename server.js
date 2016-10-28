@@ -12,6 +12,10 @@ io.on('connection', (socket) => {
     socket.emit('test', 'Client connected.')
     //console.log('CONNECTED', socket)
 	socket.on('general', (msg) => {
-		io.emit('general', msg)	
+		io.emit('general', msg)
 	})
+
+  socket.on('create', function(room) {
+    socket.join(room);
+  });
 })
