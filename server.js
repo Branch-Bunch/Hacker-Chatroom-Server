@@ -1,15 +1,15 @@
 'use strict'
 
 const app = require('express')()
-const server = require('http').createServer()
+const server = require('http').createServer(app)
 const io = require('socket.io')(server)
 
-app.get('/rooms', (req, res) => {
-  res.status(200).json(io.sockets.adapter.rooms)
+server.listen(process.env.PORT || 3030, () => {
+    console.log('Listening on 3030')
 })
 
-server.listen(process.env.PORT || 3030, () => {
-  console.log('Listening on 3030')
+app.get('/rooms', (req, res) => {
+    res.status(200).json(io.sockets.adapter.rooms)
 })
 
 io.on('connection', (socket) => {
@@ -31,5 +31,4 @@ io.on('connection', (socket) => {
   	socket.on('create', (room) => {
     	socket.join(room)
   	})
-
 })
