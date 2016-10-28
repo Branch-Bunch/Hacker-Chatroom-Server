@@ -9,6 +9,9 @@ server.listen(3030, () => {
 })
 
 io.on('connection', (socket) => {
-    socket.emit('test', 'Are you reading this?')
-    console.log('CONNECTED', socket)
+    socket.emit('test', 'Client connected.')
+    //console.log('CONNECTED', socket)
+	socket.on('general', (msg) => {
+		io.emit('general', msg)	
+	})
 })
