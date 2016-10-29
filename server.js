@@ -16,6 +16,7 @@ io.on('connection', (socket) => {
     socket.emit('test', 'Connected to web socket')
     console.log('Client Connected')
     socket.emit('setname', 'Enter username: ')
+    socket.emit('sendmessage', '')
     socket.on('general', (msg) => {
         io.emit('general', msg)
         console.log(msg)
