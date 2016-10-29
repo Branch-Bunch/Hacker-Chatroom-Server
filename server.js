@@ -10,7 +10,7 @@ server.listen(port, () => {
 })
 
 app.get('/rooms', (req, res) => {
-    const roomKeys = io.sockets.adapter.rooms.keys()
+    const roomKeys = io.sockets.adapter.rooms
     res.send(io.sockets.clients())
 })
 
