@@ -10,8 +10,7 @@ server.listen(port, () => {
 })
 
 app.get('/rooms', (req, res) => {
-    let roomKeys = Object.keys(io.sockets.adapter.rooms)
-    res.send(io)
+    res.send(getRooms())
 })
 
 io.on('connection', (socket) => {
@@ -19,10 +18,6 @@ io.on('connection', (socket) => {
     console.log('Client Connected')
     socket.emit('setname', 'Enter username: ')
     socket.emit('sendmessage', '')
-
-    if (io.sockets.adapter.rooms) {
-        socket.join('Default Room')
-    }
 
     socket.on('general', (msg) => {
         io.emit('general', msg)
@@ -41,3 +36,16 @@ io.on('connection', (socket) => {
         socket.join(room)
     })
 })
+
+function getRooms() {
+    const rooms = io.sockets.adapter.rooms
+    let chatRoom = Object.keys(rooms)
+        .filter(room => Object.keys(rooms[room].sockets)[0] !== room)
+
+    if (chatRoom.length === 0) {
+        io.emit('create', 'Default Room')
+        chatRoom = Object.keys(rooms)
+            .filter(room => Object.keys(rooms[room].sockets)[0] !== room)
+    }
+    return chatRoom
+}
