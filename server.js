@@ -19,6 +19,7 @@ io.on('connection', (socket) => {
 
     socket.on('general', (msg) => {
         io.emit('general', msg)
+        console.log(msg)
     })
 
     socket.on('private', (sender, msg) => {
