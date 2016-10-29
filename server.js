@@ -10,8 +10,8 @@ server.listen(port, () => {
 })
 
 app.get('/rooms', (req, res) => {
-    const roomKeys = io.sockets.adapter.rooms
-    res.send(io.sockets.clients())
+    let roomKeys = Object.keys(io.sockets.adapter.rooms)
+    res.send(io.sockets.connected())
 })
 
 io.on('connection', (socket) => {
