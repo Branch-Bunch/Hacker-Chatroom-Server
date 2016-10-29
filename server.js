@@ -11,7 +11,7 @@ server.listen(port, () => {
 
 app.get('/rooms', (req, res) => {
     let roomKeys = Object.keys(io.sockets.adapter.rooms)
-    res.send(io.sockets)
+    res.send(io)
 })
 
 io.on('connection', (socket) => {
