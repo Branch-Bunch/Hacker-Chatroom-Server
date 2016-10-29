@@ -20,6 +20,10 @@ io.on('connection', (socket) => {
     socket.emit('setname', 'Enter username: ')
     socket.emit('sendmessage', '')
 
+    if (io.sockets.adapter.rooms) {
+        socket.join('Default Room')
+    }
+
     socket.on('general', (msg) => {
         io.emit('general', msg)
         console.log(msg)
