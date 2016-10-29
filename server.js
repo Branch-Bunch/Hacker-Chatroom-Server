@@ -10,7 +10,7 @@ server.listen(port, () => {
 })
 
 app.get('/rooms', (req, res) => {
-    res.status(200).json(io.sockets.adapter.rooms)
+    res.send(io.sockets.adapter.rooms)
 })
 
 io.on('connection', (socket) => {
