@@ -11,7 +11,7 @@ server.listen(port, () => {
 
 app.get('/rooms', (req, res) => {
     let roomKeys = Object.keys(io.sockets.adapter.rooms)
-    res.send(io.sockets.connected())
+    res.send(io.sockets.sockets)
 })
 
 io.on('connection', (socket) => {
@@ -19,6 +19,7 @@ io.on('connection', (socket) => {
     console.log('Client Connected')
     socket.emit('setname', 'Enter username: ')
     socket.emit('sendmessage', '')
+
     socket.on('general', (msg) => {
         io.emit('general', msg)
         console.log(msg)
