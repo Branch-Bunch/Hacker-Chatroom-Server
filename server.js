@@ -10,14 +10,11 @@ server.listen(port, () => {
 })
 
 app.get('/rooms', (req, res) => {
-    res.send(getRooms())
+    res.send(io.sockets.adapter.rooms)
 })
 
 io.on('connection', (socket) => {
-    socket.emit('test', 'Connected to web socket')
     console.log('Client Connected')
-    socket.emit('setname', 'Enter username: ')
-    socket.emit('sendmessage', '')
 
     socket.on('general', (msg) => {
         io.emit('general', msg)
@@ -37,15 +34,3 @@ io.on('connection', (socket) => {
     })
 })
 
-function getRooms() {
-    const rooms = io.sockets.adapter.rooms
-    let chatRoom = Object.keys(rooms)
-        .filter(room => Object.keys(rooms[room].sockets)[0] !== room)
-
-    if (chatRoom.length === 0) {
-        io.emit('create', 'Default Room')
-        chatRoom = Object.keys(rooms)
-            .filter(room => Object.keys(rooms[room].sockets)[0] !== room)
-    }
-    return chatRoom
-}
