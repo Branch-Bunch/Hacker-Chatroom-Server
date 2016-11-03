@@ -33,18 +33,24 @@ io.on('connection', (socket) => {
     socket.on('private', (sender, message) => {
         // private message received
     })
-
-    socket.on('user-disconnect', (name) => {
-        const room = filterRooms(socket)
+    
+    socket.on('leave-room', (name) => {
         const message = name + ' has disconnected'
-        io.to(room[0]).emit('user-disconnect', message)
-        console.log(message)
+        notifyRoom(socket, 'leave-room', message)
     })
 
-    socket.on('create', (room) => {
+    socket.on('join-room', (room, name) => {
         socket.join(room)
+        const message = name + ' has connected'
+        notifyRoom(socket, 'join-room', message)
     })
 })
+
+function notifyRoom(socket, event, message) {
+    const room = filterRooms(socket) 
+    io.to(room[0]).emit(event, message)
+    console.log(message)
+}
 
 function filterRooms(socket) { 
     return Object.keys(socket.rooms)
