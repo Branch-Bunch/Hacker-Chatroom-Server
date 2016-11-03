@@ -10,18 +10,26 @@ server.listen(port, () => {
 })
 
 app.get('/rooms', (req, res) => {
-    res.send(io.sockets.adapter.rooms)
+    const rooms = io.sockets.adapter.rooms
+    const chatRooms = Object.keys(rooms)
+        .filter(room => Object.keys(rooms[room].sockets)[0] !== room)
+        .map(room => ({ name: room, size: rooms[room].length }))
+
+    res.send(chatRooms)
 })
 
 io.on('connection', (socket) => {
     console.log('Client Connected')
 
-    socket.on('general', (msg) => {
-        io.emit('general', msg)
-        console.log(msg)
+    socket.on('chat', (message) => {
+        const room = Object.keys(socket.rooms)
+            .filter(x => x !== socket.id)
+
+        io.to(room[0]).emit('chat', message)
+        console.log(message)
     })
 
-    socket.on('private', (sender, msg) => {
+    socket.on('private', (sender, message) => {
         // private message received
     })
 
