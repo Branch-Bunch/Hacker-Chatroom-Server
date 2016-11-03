@@ -11,6 +11,8 @@ server.listen(port, () => {
 
 app.get('/rooms', (req, res) => {
     const rooms = io.sockets.adapter.rooms
+    console.log(io.sockets.adapter.rooms)
+
     const chatRooms = Object.keys(rooms)
         .filter(room => Object.keys(rooms[room].sockets)[0] !== room)
         .map(room => ({ name: room, size: rooms[room].length }))
@@ -22,8 +24,7 @@ io.on('connection', (socket) => {
     console.log('Client Connected')
 
     socket.on('chat', (message) => {
-        const room = Object.keys(socket.rooms)
-            .filter(x => x !== socket.id)
+        const room = filterRooms(socket)
 
         io.to(room[0]).emit('chat', message)
         console.log(message)
@@ -33,8 +34,11 @@ io.on('connection', (socket) => {
         // private message received
     })
 
-    socket.on('disconnect', () => {
-        io.emit('client disconnected')
+    socket.on('user-disconnect', (name) => {
+        const room = filterRooms(socket)
+        const message = name + ' has disconnected'
+        io.to(room[0]).emit('user-disconnect', message)
+        console.log(message)
     })
 
     socket.on('create', (room) => {
@@ -42,3 +46,7 @@ io.on('connection', (socket) => {
     })
 })
 
+function filterRooms(socket) { 
+    return Object.keys(socket.rooms)
+        .filter(x => x !== socket.id)
+} 
