@@ -24,8 +24,7 @@ io.on('connection', (socket) => {
     console.log('Client Connected')
 
     socket.on('chat', (message) => {
-        const room = filterRooms(socket)
-        io.to(room[0]).emit('chat', message)
+        notifyRoom(filterRooms(socket), 'chat', message)
         console.log(message)
     })
 
@@ -35,7 +34,7 @@ io.on('connection', (socket) => {
     
     socket.on('leave-room', (name) => {
         const message = name + ' has disconnected'
-        notifyRoom(socket, 'leave-room', message)
+        notifyRoom(filterRooms(socket), 'leave-room', message)
     })
 
     socket.on('join-room', (room, name) => {
@@ -45,21 +44,15 @@ io.on('connection', (socket) => {
     })
 })
 
-function notifyRoom(context, event, message) {
-    let room = ''
-    if (typeof(context) !== 'object') {
-        // received a roomname
-        room = context
-        io.to(room).emit(event, message)
-    } else {
-        // received a socket
-        room = filterRooms(context)
-        io.to(room[0]).emit(event, message)
+function notifyRoom(room, event, message) {
+    if (typeof(room) !== 'string') {
+        // if the socket is passed
+        room = filterRooms(room)
     }
-    console.log(message)
+    io.to(room).emit(event, message)
 }
 
 function filterRooms(socket) { 
     return Object.keys(socket.rooms)
-        .filter(x => x !== socket.id)
+        .filter(x => x !== socket.id)[0]
 } 
