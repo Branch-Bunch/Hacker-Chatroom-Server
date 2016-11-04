@@ -25,7 +25,6 @@ io.on('connection', (socket) => {
 
     socket.on('chat', (message) => {
         const room = filterRooms(socket)
-
         io.to(room[0]).emit('chat', message)
         console.log(message)
     })
@@ -42,13 +41,21 @@ io.on('connection', (socket) => {
     socket.on('join-room', (room, name) => {
         socket.join(room)
         const message = name + ' has connected'
-        notifyRoom(socket, 'join-room', message)
+        notifyRoom(room, 'join-room', message)
     })
 })
 
-function notifyRoom(socket, event, message) {
-    const room = filterRooms(socket) 
-    io.to(room[0]).emit(event, message)
+function notifyRoom(context, event, message) {
+    let room = ''
+    if (typeof(context) !== 'object') {
+        // received a roomname
+        room = context
+        io.to(room).emit(event, message)
+    } else {
+        // received a socket
+        room = filterRooms(context)
+        io.to(room[0]).emit(event, message)
+    }
     console.log(message)
 }
 
