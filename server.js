@@ -22,7 +22,8 @@ io.on('connection', (socket) => {
     console.log('Client Connected')
 
     socket.on('chat', (message) => {
-        notifyRoom(filterRooms(socket), 'chat', message)
+        const room = filterRooms(socket)
+        notifyRoom(room, 'chat', message)
         console.log(message)
     })
 
@@ -31,14 +32,23 @@ io.on('connection', (socket) => {
     })
     
     socket.on('leave-room', (name) => {
+        const room = filterRooms(socket)
         const message = name + ' has disconnected'
-        notifyRoom(filterRooms(socket), 'leave-room', message)
+        notifyRoom(room, 'leave-room', message)
+        console.log(message + ' from ' + room)
+        
+        socket.leave(room, (err) => {
+            if (err) {
+                console.log(err)
+            }
+        })
     })
 
     socket.on('join-room', (room, name) => {
         socket.join(room)
         const message = name + ' has connected'
         notifyRoom(room, 'join-room', message)
+        console.log(message + ' to ' + room)
     })
 })
 
