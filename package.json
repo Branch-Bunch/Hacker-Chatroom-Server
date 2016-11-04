@@ -2,21 +2,21 @@
   "name": "Hacker-Chatroom",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JackyChiu/Hacker-Chatroom.git"
+    "url": "https://github.com/Hacker-Chatroom/Hacker-Chatroom-Server"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/JackyChiu/Hacker-Chatroom/issues"
+    "url": "https://github.com/Hacker-Chatroom/Hacker-Chatroom-Server/issues"
   },
-  "homepage": "https://github.com/JackyChiu/Hacker-Chatroom#readme",
+  "homepage": "https://github.com/Hacker-Chatroom/Hacker-Chatroom-Server#readme",
   "dependencies": {
     "express": "^4.14.0",
     "socket.io": "^1.5.1"
