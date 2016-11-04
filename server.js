@@ -11,8 +11,6 @@ server.listen(port, () => {
 
 app.get('/rooms', (req, res) => {
     const rooms = io.sockets.adapter.rooms
-    console.log(io.sockets.adapter.rooms)
-
     const chatRooms = Object.keys(rooms)
         .filter(room => Object.keys(rooms[room].sockets)[0] !== room)
         .map(room => ({ name: room, size: rooms[room].length }))
