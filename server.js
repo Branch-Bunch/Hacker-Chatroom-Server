@@ -20,9 +20,10 @@ app.get('/rooms', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('Client Connected')
-    
-	socket.on('chat', (message) => {
-        notifyRoom(socket, 'chat', message)
+ 
+    socket.on('chat', (message) => {
+        const room = filterRooms(socket)
+        notifyRoom(room, 'chat', message)
         console.log(message)
     })
 
@@ -33,9 +34,9 @@ io.on('connection', (socket) => {
     socket.on('leave-room', (name) => {
         const room = filterRooms(socket)
         const message = `${getTime()} - ${name} has disconnected`
-        notifyRoom(room, 'leave-room', message)
-		console.log(`${message} from ${room}`) 
- 
+        socket.broadcast.to(room).emit('leave-room', message)
+        console.log(`${message} from ${room}`)
+
         socket.leave(room, (err) => {
             if (err) {
                 console.log(err)
@@ -46,16 +47,12 @@ io.on('connection', (socket) => {
     socket.on('join-room', (room, name) => {
         socket.join(room)
         const message =  `${getTime()} - ${name} has connected`
-        notifyRoom(room, 'join-room', message)
+        socket.broadcast.to(room).emit('join-room', message)
         console.log(`${message} to ${room}`)
     })
 })
 
 function notifyRoom(room, event, message) {
-    if (typeof(room) !== 'string') {
-        // if the socket is passed
-        room = filterRooms(room)
-    }
     io.to(room).emit(event, message)
 }
 
@@ -65,6 +62,7 @@ function filterRooms(socket) {
 } 
 
 function getTime() {
-	let d = new Date()
-	return `${(d.getHours() >= 12 ? d.getHours() - 12 : d.getHours())}:${d.getMinutes()}`
+    const d = new Date()
+    const pad = d.getMinutes() < 10 ? '0' : ''
+    return `${d.getHours()}:${pad}${d.getMinutes()}`
 }
