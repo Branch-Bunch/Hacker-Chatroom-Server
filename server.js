@@ -20,25 +20,49 @@ app.get('/rooms', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('Client Connected')
-
+ 
     socket.on('chat', (message) => {
-        const room = Object.keys(socket.rooms)
-            .filter(x => x !== socket.id)
-
-        io.to(room[0]).emit('chat', message)
+        const room = filterRooms(socket)
+        notifyRoom(room, 'chat', message)
         console.log(message)
     })
 
     socket.on('private', (sender, message) => {
         // private message received
     })
+    
+    socket.on('leave-room', (name) => {
+        const room = filterRooms(socket)
+        const message = `${getTime()} - ${name} has disconnected`
+        socket.broadcast.to(room).emit('leave-room', message)
+        console.log(`${message} from ${room}`)
 
-    socket.on('disconnect', () => {
-        io.emit('client disconnected')
+        socket.leave(room, (err) => {
+            if (err) {
+                console.log(err)
+            }
+        })
     })
 
-    socket.on('create', (room) => {
+    socket.on('join-room', (room, name) => {
         socket.join(room)
+        const message =  `${getTime()} - ${name} has connected`
+        socket.broadcast.to(room).emit('join-room', message)
+        console.log(`${message} to ${room}`)
     })
 })
 
+function notifyRoom(room, event, message) {
+    io.to(room).emit(event, message)
+}
+
+function filterRooms(socket) { 
+    return Object.keys(socket.rooms)
+        .filter(x => x !== socket.id)[0]
+} 
+
+function getTime() {
+    const d = new Date()
+    const pad = d.getMinutes() < 10 ? '0' : ''
+    return `${d.getHours()}:${pad}${d.getMinutes()}`
+}
